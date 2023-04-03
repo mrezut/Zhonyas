@@ -20,7 +20,17 @@ T.Win = 1
 T.save()
 """
 
-lol_watcher = LolWatcher('RGAPI-92a3cb52-e878-4a4e-9f40-09399e43c512')
+file_name = 'API_Key.txt'
+def get_file_contents(filename):
+    try:
+        with open(file_name, 'r') as f:
+            return f.read().strip()             #file assumed to contain single line with the API key
+    except FileNotFoundError:
+        print("file not found")
+
+api_key = get_file_contents(file_name)
+
+lol_watcher = LolWatcher(api_key)
 
 num_matches = 1
 player_routing = 'americas'
