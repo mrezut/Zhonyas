@@ -80,7 +80,7 @@ def data_gather(puuid_obj):
 
 start_time = int(datetime.datetime.now().timestamp())
 
-while int(datetime.datetime.now().timestamp()) - start_time < 120:   #collection will last for 1 hour (3600 sec) upon starting
+while int(datetime.datetime.now().timestamp()) - start_time < 3600:   #collection will last for 1 hour (3600 sec) upon starting
     cur = db_connection.cursor()    
 
     for row in cur.execute("SELECT * FROM Puuids ORDER BY date_last_updated ASC LIMIT 1"):
