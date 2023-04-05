@@ -24,9 +24,19 @@ class Puuid:
             values = (self.date_last_updated, self.Id)
             cur.execute(sql,values)
         
-
-
         self.db.commit()    
         cur.close()
 
+    def should_update(self):
+        if self.date_recorded == self.date_last_updated:
+            return True
+        elif  int(datetime.datetime.now().timestamp()) - self.date_last_updated > 86400:
+            return True
+        else:
+            return False
     
+    def load(self, Id, puuid, date_recorded, date_last_updated):
+        self.Id = Id
+        self.puuid = puuid
+        self.date_recorded = date_recorded
+        self.date_last_updated = date_last_updated

@@ -1,4 +1,7 @@
+import datetime
+import time
 import uuid
+from models.Puuid import Puuid
 from models.ItemWinrate import *
 from riotwatcher import LolWatcher, ApiError
 import sys
@@ -66,13 +69,27 @@ def itemWR_rows_from_matchId(matchId):
             dakota.append(T)
     return dakota
 
-try:
-    cur = db_connection.cursor()
-    for row in cur.execute("SELECT puuid FROM Puuids LIMIT 1"):
-        for matchId in match_history_by_puuid(row[0]):
+
+def data_gather(puuid_obj):
+    try:
+        for matchId in match_history_by_puuid(puuid_obj.puuid):
             for itemWR in itemWR_rows_from_matchId(matchId):
                 itemWR.save()
+    except Exception as e: 
+        print(e)   
 
+start_time = int(datetime.datetime.now().timestamp())
+
+while int(datetime.datetime.now().timestamp()) - start_time < 120:   #collection will last for 1 hour (3600 sec) upon starting
+    cur = db_connection.cursor()    
+
+    for row in cur.execute("SELECT * FROM Puuids ORDER BY date_last_updated ASC LIMIT 1"):
+        puuid_obj = Puuid(db_connection)
+        puuid_obj.load(row[0],row[1],row[2],row[3])
+        if puuid_obj.should_update():
+            data_gather(puuid_obj)
+            puuid_obj.save()
+            print("something good happened?")
     cur.close()
-except Exception as e: 
-    print(e)   
+
+    time.sleep(10)    #delay of 10 seconds
