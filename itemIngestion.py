@@ -23,7 +23,7 @@ cur = db_connection.cursor()
 list_matchIds = cur.execute("SELECT matchId FROM MatchIdPuuidBridge").fetchall()
 #initially starts at -1, set num = x where x is relatively where it left off before stopping to skip the few numbers that are revisited (API key expires usually)
 #num = -1
-num = 5200
+num = 52000
 count = len(list_matchIds)
 
 

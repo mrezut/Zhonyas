@@ -18,8 +18,8 @@ itemWinRatesRepo = ItemWinRatesRepository(db_connection)
 cur = db_connection.cursor()
 
 #delete all rows to ingest with new data 
-cur.execute("DELETE FROM ChampionWinRates")
-db_connection.commit()
+#cur.execute("DELETE FROM ChampionWinRates")
+#db_connection.commit()
 cur.execute("DELETE FROM ItemWinRates")
 db_connection.commit()
 
@@ -40,7 +40,7 @@ list_items = cur.execute("SELECT DISTINCT itemName FROM ItemsPerMatch ORDER BY i
 
 for item in list_items:
     print(item) #this is just a heartbeat to show that program is running
-    item_wins = cur.execute("SELECT COUNT(win) FROM ItemsPerMatch WHERE itemName = ?", [item[0]]).fetchall()[0][0]
+    item_wins = cur.execute("SELECT COUNT(win) FROM ItemsPerMatch WHERE (itemName = ? AND win = 1)", [item[0]]).fetchall()[0][0]
     total_games = cur.execute("SELECT COUNT(win) FROM ItemsPerMatch WHERE itemName = ?", [item[0]]).fetchall()[0][0]
     winrate =  round(item_wins / total_games, 4) * 100
     itemWinRatesRepo.create(item[0], winrate)
